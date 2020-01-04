@@ -41,11 +41,6 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use((req, res, next) => {
-  res.locals.isAuthenticated = req.session.isLoggedIn
-  next()
-})
-
 // routes
 app.use('/', require('./routes/homeRouter'))
 
