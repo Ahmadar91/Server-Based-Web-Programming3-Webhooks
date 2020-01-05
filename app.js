@@ -1,10 +1,15 @@
 
 'use strict'
+var bodyParser = require('body-parser')
+
 const express = require('express')
 const hbs = require('express-hbs')
 const path = require('path')
 const logger = require('morgan')
 const app = express()
+require('dotenv').config()
+const GithubHook = require('express-github-webhook')
+const hook = GithubHook({ path: '/webhook', secret: process.env.TOKEN })
 
 // view engine setup
 app.engine('hbs', hbs.express4({
@@ -14,15 +19,17 @@ app.engine('hbs', hbs.express4({
 app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, 'views'))
 // additional middleware
+app.use(hook) // use our middleware
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 app.use(logger('dev'))
 app.use(express.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
 
-// middleware to be executed before the routes
-
 // routes
 app.use('/', require('./routes/homeRouter'))
 
+// use for localhost
 // catch 404
 app.use((req, res, next) => {
   res.status(404)
