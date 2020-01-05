@@ -58,7 +58,7 @@ hook.on('error', function (err, req, res) {
 })
 
 // routes
-// app.use('/', require('./routes/homeRouter'))
+app.use('/', require('./routes/homeRouter'))
 
 // catch 404
 app.use((req, res, next) => {
