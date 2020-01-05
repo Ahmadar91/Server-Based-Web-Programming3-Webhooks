@@ -33,7 +33,13 @@ app.use(logger('dev'))
 app.use(express.static(path.join(__dirname, 'public')))
 
 hook.on('issues', function (repo, data) {
-  console.log(data)
+  // console.log(data)
+  const data1 = JSON.parse(data.payload)
+  console.log('data1')
+  console.log(data1)
+  console.log(data1.action)
+  console.log(data1.issue.title)
+  console.log(data1.issue.comments)
 })
 hook.on('error', function (err, req, res) {
   if (err) {
