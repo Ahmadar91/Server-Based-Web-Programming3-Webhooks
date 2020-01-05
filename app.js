@@ -4,7 +4,6 @@ const express = require('express')
 const hbs = require('express-hbs')
 const path = require('path')
 const logger = require('morgan')
-const session = require('express-session')
 const app = express()
 
 // view engine setup
@@ -19,27 +18,7 @@ app.use(logger('dev'))
 app.use(express.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
 
-const sessionOptions = {
-  name: 'name of keyboard cat',
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 24 // 1 day
-  }
-}
-
-app.use(session(sessionOptions))
 // middleware to be executed before the routes
-app.use((req, res, next) => {
-  // flash messages - survives only a round trip
-  if (req.session.flash) {
-    res.locals.flash = req.session.flash
-    delete req.session.flash
-  }
-
-  next()
-})
 
 // routes
 app.use('/', require('./routes/homeRouter'))
