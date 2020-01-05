@@ -26,7 +26,9 @@
     "express-github-webhook": "^1.0.6",
     "express-hbs": "^2.3.0",
     "express-session": "^1.17.0",
-    "morgan": "^1.9.1"
+    "http": "0.0.0",
+    "morgan": "^1.9.1",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.2",
