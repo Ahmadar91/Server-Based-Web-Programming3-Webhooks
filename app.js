@@ -35,12 +35,22 @@ app.use(express.static(path.join(__dirname, 'public')))
 hook.on('issues', function (repo, data) {
   // console.log(data)
   const data1 = JSON.parse(data.payload)
-  console.log('data1')
-  console.log(data1)
+  // console.log('data1')
+  // console.log(data1)
   console.log(data1.action)
   console.log(data1.issue.title)
   console.log(data1.issue.comments)
 })
+hook.on('issue_comment', function (repo, data) {
+  const data1 = JSON.parse(data.payload)
+  console.log('----Comments ----')
+
+  console.log(data1.issue.comments)
+  console.log(data1.issue.number)
+  console.log(data1.issue.title)
+  console.log(data1.comment.body)
+})
+
 hook.on('error', function (err, req, res) {
   if (err) {
     console.log(err)
