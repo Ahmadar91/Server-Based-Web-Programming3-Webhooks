@@ -1,6 +1,7 @@
 
 'use strict'
 
+require('dotenv').config()
 var http = require('http')
 const express = require('express')
 const hbs = require('express-hbs')
@@ -9,9 +10,8 @@ const logger = require('morgan')
 var bodyParser = require('body-parser')
 const app = express()
 
-require('dotenv').config()
 const GithubHook = require('express-github-webhook')
-const hook = GithubHook({ path: '/webhook' })
+const hook = GithubHook({ path: '/webhook', secret: process.env.Token })
 const PORT = 3000
 const server = http.createServer(app).listen(PORT, function () {
   console.log('Started: listing on port', PORT)
