@@ -9,7 +9,7 @@ const path = require('path')
 const logger = require('morgan')
 var bodyParser = require('body-parser')
 const app = express()
-
+const octonode = require('octonode')
 const GithubHook = require('express-github-webhook')
 const hook = GithubHook({ path: '/webhook', secret: process.env.Token })
 
@@ -26,31 +26,53 @@ app.engine('hbs', hbs.express4({
 }))
 app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, 'views'))
-// additional middleware
 
+const ws = require('express-ws')(app, server)
+
+// additional middleware
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(hook)
 app.use(logger('dev'))
 app.use(express.static(path.join(__dirname, 'public')))
 
-hook.on('issues', function (repo, data) {
-  console.log(data)
-  // const data1 = JSON.parse(data.payload)
-  // console.log('data1')
-  // console.log(data1)
-  console.log(data.action)
-  console.log(data.issue.title)
-  console.log(data.issue.comments)
-})
-hook.on('issue_comment', function (repo, data) {
-  // const data1 = JSON.parse(data.payload)
-  console.log('----Comments ----')
+const client = octonode.client(process.env.Token)
+const repo = client.repo('1dv523/aa224fn-examination-3')
+repo.issues(function (callback, body, header) {
+  console.log(body)
 
-  console.log(data.issue.comments)
-  console.log(data.issue.number)
-  console.log(data.issue.title)
-  console.log(data.comment.body)
+  for (let index = 0; index < body.length; index++) {
+    console.log('title: ', body[index].title)
+    console.log('url', body[index].html_url)
+    console.log('number:', body[index].number)
+    console.log('user:', body[index].user.login)
+    console.log('body:', body[index].body)
+  }
+})
+
+ws.getWss().on('connection', function (ws) {
+  console.log('connected')
+})
+app.ws('', function (ws, req) {
+  hook.on('issues', function (repo, data) {
+    console.log(data)
+    // const data1 = JSON.parse(data.payload)
+    // console.log('data1')
+    // console.log(data1)
+    console.log(data.action)
+    console.log(data.issue.title)
+    console.log(data.issue.comments)
+    ws.send(JSON.stringify(data))
+  })
+  hook.on('issue_comment', function (repo, data) {
+    // const data1 = JSON.parse(data.payload)
+    console.log('----Comments ----')
+    console.log(data.issue.comments)
+    console.log(data.issue.number)
+    console.log(data.issue.title)
+    console.log(data.comment.body)
+    ws.send(JSON.stringify(data))
+  })
 })
 
 hook.on('error', function (err, req, res) {
@@ -58,7 +80,6 @@ hook.on('error', function (err, req, res) {
     console.log(err)
   }
 })
-
 // routes
 app.use('/', require('./routes/homeRouter'))
 

@@ -26,8 +26,10 @@
     "express-github-webhook": "^1.0.6",
     "express-hbs": "^2.3.0",
     "express-session": "^1.17.0",
+    "express-ws": "^4.0.0",
     "http": "0.0.0",
     "morgan": "^1.9.1",
+    "octonode": "^0.9.5",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
