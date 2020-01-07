@@ -1,53 +1,73 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import React from 'react'
+import logo from './logo.svg'
+import './App.css'
+import Alerts from './alerts'
 export default class App extends React.Component {
-
-  socket
-  state
-  constructor(props) {
+  constructor (props) {
     super(props)
-    this.socket = new WebSocket("ws:localhost:3000");
+    this.socket = new WebSocket('ws:localhost:3000')
     this.socket.addEventListener('message', (event) => this.receive(event))
     this.state = {
-      issueList: []
+      issueList: [],
+      alerts: {
+        active: false,
+        message: ''
+      }
     }
   }
-  receive(e) {
+
+  receive (e) {
     const data = JSON.parse(e.data)
-    console.log(e.data);
+    console.log(e.data)
 
     if (data.message === 'list') {
       this.setState({
         issueList: data.data
       })
-      
+    } else if (data.message === 'update') {
+      this.update(data)
+      console.log(data.action)
     }
-   else if (data.message === 'update') {
-        this.update(data)
-        console.log(data.action);
-      }
   }
 
-  update(e) {
+  update (e) {
     if (e.action === 'open' || e.action === 'reopened') {
       const temp = this.state.issueList
       temp.push({
         action: e.action,
         title: e.title,
         comments: e.comments,
-        number: e.number
+        number: e.number,
+        body: e.body
       })
       this.setState({
-        issueList: temp
+        issueList: temp,
+        alerts: {
+          active: true,
+          message: `new issue is ${e.action}`
+        }
       })
       console.log(temp)
     }
     if (e.action === 'closed') {
       const temp = this.state.issueList
-     let index = temp.findIndex(x => x.number === e.number)
-     temp.splice(index , 1)
+      const index = temp.findIndex(x => x.number === e.number)
+      temp.splice(index, 1)
+      this.setState({
+        issueList: temp
+      })
+      console.log(temp)
+    }
+    if (e.action === 'edited') {
+      const temp = this.state.issueList
+      const index = temp.findIndex(x => x.number === e.number)
+      temp[index] = {
+        action: e.action,
+        title: e.title,
+        comments: e.comments,
+        number: e.number,
+        body: e.body
+      }
       this.setState({
         issueList: temp
       })
@@ -55,18 +75,21 @@ export default class App extends React.Component {
     }
   }
 
-
-  render() {
+  render () {
     return (
       <div>
-        {
-          this.state.issueList.map((item) => (
-            <div>
-              {item.title}
+        <Alerts active={this.state.alerts.active} message={this.state.alerts.message} />
 
-            </div>
-          ))
-        }
+        <div className='App'>
+          {
+            this.state.issueList.map((item) => (
+              <div>
+                {item.title}
+                {item.body}
+              </div>
+            ))
+          }
+        </div>
       </div>
     )
   }

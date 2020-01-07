@@ -61,7 +61,8 @@ app.ws('', function (ws, req) {
       action: data.action,
       title: data.issue.title,
       comments: data.issue.comments,
-      number: data.issue.number
+      number: data.issue.number,
+      body: data.issue.body
     }
     ws.send(JSON.stringify(obj))
   })
