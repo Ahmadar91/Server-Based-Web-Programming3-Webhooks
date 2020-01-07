@@ -18,7 +18,6 @@ const PORT = process.env.PORT || 3000
 const server = http.createServer(app).listen(PORT, function () {
   console.log('Started: listing on port', PORT)
 })
-
 // view engine setup
 app.engine('hbs', hbs.express4({
   defaultLayout: path.join(__dirname, 'views', 'layouts', 'default'),
@@ -26,9 +25,7 @@ app.engine('hbs', hbs.express4({
 }))
 app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, 'views'))
-
 const ws = require('express-ws')(app, server)
-
 // additional middleware
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -53,25 +50,14 @@ ws.getWss().on('connection', function (ws) {
         user: body[index].user.login,
         body: body[index].body
       })
-      // console.log('title: ', body[index].title)
-      // console.log('url', body[index].html_url)
-      // console.log('number:', body[index].number)
-      // console.log('user:', body[index].user.login)
-      // console.log('body:', body[index].body)
     }
-    ws.send(JSON.stringify(issueList))
+    ws.send(JSON.stringify({ message: 'list', data: issueList }))
   })
 })
 app.ws('', function (ws, req) {
   hook.on('issues', function (repo, data) {
-    console.log(data)
-    // const data1 = JSON.parse(data.payload)
-    // console.log('data1')
-    // console.log(data1)
-    console.log(data.action)
-    console.log(data.issue.title)
-    console.log(data.issue.comments)
     const obj = {
+      message: 'update',
       action: data.action,
       title: data.issue.title,
       comments: data.issue.comments
@@ -79,13 +65,8 @@ app.ws('', function (ws, req) {
     ws.send(JSON.stringify(obj))
   })
   hook.on('issue_comment', function (repo, data) {
-    // const data1 = JSON.parse(data.payload)
-    console.log('----Comments ----')
-    console.log(data.issue.comments)
-    console.log(data.issue.number)
-    console.log(data.issue.title)
-    console.log(data.comment.body)
     const obj = {
+      message: 'comment',
       comments: data.issue.comments,
       number: data.issue.number,
       title: data.issue.title,
