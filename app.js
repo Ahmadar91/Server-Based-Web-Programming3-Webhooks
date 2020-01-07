@@ -38,20 +38,29 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 const client = octonode.client(process.env.Token)
 const repo = client.repo('1dv523/aa224fn-examination-3')
-repo.issues(function (callback, body, header) {
-  console.log(body)
-
-  for (let index = 0; index < body.length; index++) {
-    console.log('title: ', body[index].title)
-    console.log('url', body[index].html_url)
-    console.log('number:', body[index].number)
-    console.log('user:', body[index].user.login)
-    console.log('body:', body[index].body)
-  }
-})
 
 ws.getWss().on('connection', function (ws) {
   console.log('connected')
+  repo.issues(function (callback, body, header) {
+    console.log(body)
+
+    const issueList = []
+    for (let index = 0; index < body.length; index++) {
+      issueList.push({
+        title: body[index].title,
+        url: body[index].html_url,
+        number: body[index].number,
+        user: body[index].user.login,
+        body: body[index].body
+      })
+      // console.log('title: ', body[index].title)
+      // console.log('url', body[index].html_url)
+      // console.log('number:', body[index].number)
+      // console.log('user:', body[index].user.login)
+      // console.log('body:', body[index].body)
+    }
+    ws.send(JSON.stringify(issueList))
+  })
 })
 app.ws('', function (ws, req) {
   hook.on('issues', function (repo, data) {
@@ -62,7 +71,12 @@ app.ws('', function (ws, req) {
     console.log(data.action)
     console.log(data.issue.title)
     console.log(data.issue.comments)
-    ws.send(JSON.stringify(data))
+    const obj = {
+      action: data.action,
+      title: data.issue.title,
+      comments: data.issue.comments
+    }
+    ws.send(JSON.stringify(obj))
   })
   hook.on('issue_comment', function (repo, data) {
     // const data1 = JSON.parse(data.payload)
@@ -71,7 +85,13 @@ app.ws('', function (ws, req) {
     console.log(data.issue.number)
     console.log(data.issue.title)
     console.log(data.comment.body)
-    ws.send(JSON.stringify(data))
+    const obj = {
+      comments: data.issue.comments,
+      number: data.issue.number,
+      title: data.issue.title,
+      body: data.comment.body
+    }
+    ws.send(JSON.stringify(obj))
   })
 })
 
