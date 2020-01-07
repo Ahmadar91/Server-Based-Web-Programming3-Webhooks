@@ -82,6 +82,7 @@ export default class App extends React.Component {
   render () {
     return (
       <div>
+        <h1>ISSUE LIST</h1>
         <Alerts active={this.state.alerts.active} message={this.state.alerts.message} />
 
         <div className='App'>
