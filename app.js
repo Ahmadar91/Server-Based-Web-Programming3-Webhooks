@@ -48,7 +48,10 @@ ws.getWss().on('connection', function (ws) {
         url: body[index].html_url,
         number: body[index].number,
         user: body[index].user.login,
-        body: body[index].body
+        body: body[index].body,
+        created: body[index].created_at,
+        updated: body[index].updated_at,
+        comments: body[index].comments
       })
     }
     ws.send(JSON.stringify({ message: 'list', data: issueList }))
@@ -56,23 +59,31 @@ ws.getWss().on('connection', function (ws) {
 })
 app.ws('', function (ws, req) {
   hook.on('issues', function (repo, data) {
+    console.log(data)
+
     const obj = {
       message: 'update',
       action: data.action,
       title: data.issue.title,
       comments: data.issue.comments,
       number: data.issue.number,
-      body: data.issue.body
+      body: data.issue.body,
+      created: data.issue.created_at,
+      updated: data.issue.updated_at,
+      user: data.issue.user.login,
+      url: data.issue.html_url
     }
     ws.send(JSON.stringify(obj))
   })
   hook.on('issue_comment', function (repo, data) {
     const obj = {
       message: 'comment',
+      action: data.action,
       comments: data.issue.comments,
       number: data.issue.number,
       title: data.issue.title,
-      body: data.comment.body
+      body: data.comment.body,
+      user: data.comment.user.login
     }
     ws.send(JSON.stringify(obj))
   })

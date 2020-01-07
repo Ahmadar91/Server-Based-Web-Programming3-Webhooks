@@ -38,7 +38,11 @@ export default class App extends React.Component {
         title: e.title,
         comments: e.comments,
         number: e.number,
-        body: e.body
+        body: e.body,
+        created: e.created,
+        updated: e.updated,
+        user: e.user,
+        url: e.url
       })
       this.setState({
         issueList: temp,
@@ -83,14 +87,23 @@ export default class App extends React.Component {
         <div className='App'>
           {
             this.state.issueList.map((item) => (
-              <div>
-                {item.title}
-                {item.body}
+              <div className='card' style={{ width: '18rem' }}>
+                <div className='card-body'>
+                  <h5 className='card-title'>Title: {item.title}</h5>
+                  <h6 className='card-subtitle mb-2 text-muted'>USER: {item.user}</h6>
+                  <h6 className='card-subtitle mb-2 text-muted'>ISSUE NUMBER: {item.number}</h6>
+                  <h6 className='card-subtitle mb-2 text-muted'>comments: {item.comments}</h6>
+                  <p className='card-text'>Content: {item.body}</p>
+                  <p className='card-text'>CREATED: {item.created}</p>
+                  <p className='card-text'>UPDATED: {item.updated}</p>
+                  <a href={item.url} class='card-link'>URL</a>
+                </div>
               </div>
             ))
           }
         </div>
       </div>
+
     )
   }
 }
