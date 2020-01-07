@@ -70,7 +70,11 @@ export default class App extends React.Component {
         title: e.title,
         comments: e.comments,
         number: e.number,
-        body: e.body
+        body: e.body,
+        created: e.created,
+        updated: e.updated,
+        user: e.user,
+        url: e.url
       }
       this.setState({
         issueList: temp
