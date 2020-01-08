@@ -1,5 +1,4 @@
 import React from 'react'
-import logo from './logo.svg'
 import './App.css'
 import Alerts from './alerts'
 export default class App extends React.Component {
@@ -9,14 +8,13 @@ export default class App extends React.Component {
     this.socket.addEventListener('message', (event) => this.receive(event))
     this.state = {
       issueList: [],
-      alertlist: []
+      alertList: []
 
     }
   }
 
   receive (e) {
     const data = JSON.parse(e.data)
-    console.log(e.data)
 
     if (data.message === 'list') {
       this.setState({
@@ -24,10 +22,8 @@ export default class App extends React.Component {
       })
     } else if (data.message === 'update') {
       this.update(data)
-      console.log(data.action)
     } else if (data.message === 'comment') {
       this.alertComment(data)
-      console.log(data.action)
     }
   }
 
@@ -51,7 +47,6 @@ export default class App extends React.Component {
       this.setState({
         issueList: temp
       })
-      console.log(temp)
     }
     if (e.action === 'closed') {
       const temp = this.state.issueList
@@ -61,7 +56,6 @@ export default class App extends React.Component {
       this.setState({
         issueList: temp
       })
-      console.log(temp)
     }
     if (e.action === 'edited') {
       const temp = this.state.issueList
@@ -83,22 +77,21 @@ export default class App extends React.Component {
       this.setState({
         issueList: temp
       })
-      console.log(temp)
     }
   }
 
   alertIssue (e) {
     const alert = `the issue number ${e.number} is ${e.action} by user: ${e.user}`
-    const temp = this.state.alertlist
+    const temp = this.state.alertList
     temp.push(alert)
     this.setState({
-      alertlist: temp
+      alertList: temp
     })
   }
 
   alertComment (e) {
     const alert = `an Comment is ${e.action} by user: ${e.user} in issue number ${e.number}`
-    const alertTemp = this.state.alertlist
+    const alertTemp = this.state.alertList
     alertTemp.push(alert)
     const temp = this.state.issueList
     const index = temp.findIndex(x => x.number === e.number)
@@ -113,7 +106,7 @@ export default class App extends React.Component {
 
     this.setState({
       issueList: temp,
-      alertlist: alertTemp
+      alertList: alertTemp
     })
   }
 
@@ -124,7 +117,7 @@ export default class App extends React.Component {
         <div className='left'>
           <h1>Notification LIST</h1>
           {
-            this.state.alertlist.map((item) => (<Alerts message={item} />)
+            this.state.alertList.map((item) => (<Alerts key={item} message={item} />)
             )
           }
 
@@ -134,7 +127,7 @@ export default class App extends React.Component {
           <h1>ISSUE LIST</h1>
           {
             this.state.issueList.map((item) => (
-              <div className='card' style={{ width: '18rem' }}>
+              <div key={item.number} className='card' style={{ width: '18rem' }}>
                 <div className='card-body'>
 
                   {item.alerts > 0 &&
@@ -144,7 +137,7 @@ export default class App extends React.Component {
 
                   <h6 className='card-subtitle mb-2 text-muted'>
 
-                    <img src={item.avatar} className='card-text' height='32' width='32' />
+                    <img alt={item.avatar} src={item.avatar} className='card-text' height='32' width='32' />
                     USER: {item.user}
                   </h6>
 
@@ -154,7 +147,7 @@ export default class App extends React.Component {
                   <p className='card-text'>CREATED: {item.created}</p>
                   <p className='card-text'>UPDATED: {item.updated}</p>
 
-                  <a href={item.url} class='card-link'>URL</a>
+                  <a href={item.url} className='card-link'>URL</a>
                 </div>
               </div>
             ))
