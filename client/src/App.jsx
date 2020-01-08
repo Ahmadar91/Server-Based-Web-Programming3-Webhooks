@@ -9,10 +9,8 @@ export default class App extends React.Component {
     this.socket.addEventListener('message', (event) => this.receive(event))
     this.state = {
       issueList: [],
-      alerts: {
-        active: false,
-        message: ''
-      }
+      alertlist: []
+
     }
   }
 
@@ -26,6 +24,9 @@ export default class App extends React.Component {
       })
     } else if (data.message === 'update') {
       this.update(data)
+      console.log(data.action)
+    } else if (data.message === 'comment') {
+      this.alertComment(data)
       console.log(data.action)
     }
   }
@@ -42,14 +43,13 @@ export default class App extends React.Component {
         created: e.created,
         updated: e.updated,
         user: e.user,
-        url: e.url
+        url: e.url,
+        avatar: e.avatar,
+        alerts: e.alerts
       })
+      this.alertIssue(e)
       this.setState({
-        issueList: temp,
-        alerts: {
-          active: true,
-          message: `new issue is ${e.action}`
-        }
+        issueList: temp
       })
       console.log(temp)
     }
@@ -57,6 +57,7 @@ export default class App extends React.Component {
       const temp = this.state.issueList
       const index = temp.findIndex(x => x.number === e.number)
       temp.splice(index, 1)
+      this.alertIssue(e)
       this.setState({
         issueList: temp
       })
@@ -74,8 +75,11 @@ export default class App extends React.Component {
         created: e.created,
         updated: e.updated,
         user: e.user,
-        url: e.url
+        url: e.url,
+        avatar: e.avatar,
+        alerts: e.alerts
       }
+      this.alertIssue(e)
       this.setState({
         issueList: temp
       })
@@ -83,24 +87,73 @@ export default class App extends React.Component {
     }
   }
 
+  alertIssue (e) {
+    const alert = `the issue number ${e.number} is ${e.action} by user: ${e.user}`
+    const temp = this.state.alertlist
+    temp.push(alert)
+    this.setState({
+      alertlist: temp
+    })
+  }
+
+  alertComment (e) {
+    const alert = `an Comment is ${e.action} by user: ${e.user} in issue number ${e.number}`
+    const alertTemp = this.state.alertlist
+    alertTemp.push(alert)
+    const temp = this.state.issueList
+    const index = temp.findIndex(x => x.number === e.number)
+    if (e.action === 'deleted') {
+      temp[index].comments--
+    } else if (e.action === 'created') {
+      temp[index].comments++
+      temp[index].alerts++
+    } else if (e.action === 'edited') {
+      temp[index].alerts++
+    }
+
+    this.setState({
+      issueList: temp,
+      alertlist: alertTemp
+    })
+  }
+
   render () {
     return (
-      <div>
-        <h1>ISSUE LIST</h1>
-        <Alerts active={this.state.alerts.active} message={this.state.alerts.message} />
+      <div className='App'>
 
-        <div className='App'>
+        <div className='left'>
+          <h1>Notification LIST</h1>
+          {
+            this.state.alertlist.map((item) => (<Alerts message={item} />)
+            )
+          }
+
+        </div>
+
+        <div>
+          <h1>ISSUE LIST</h1>
           {
             this.state.issueList.map((item) => (
               <div className='card' style={{ width: '18rem' }}>
                 <div className='card-body'>
-                  <h5 className='card-title'>Title: {item.title}</h5>
-                  <h6 className='card-subtitle mb-2 text-muted'>USER: {item.user}</h6>
+
+                  {item.alerts > 0 &&
+                    <span className='red'>{item.alerts} New Comment</span>}
+
+                  <h5 className='card-title'>Title: {item.title} </h5>
+
+                  <h6 className='card-subtitle mb-2 text-muted'>
+
+                    <img src={item.avatar} className='card-text' height='32' width='32' />
+                    USER: {item.user}
+                  </h6>
+
                   <h6 className='card-subtitle mb-2 text-muted'>ISSUE NUMBER: {item.number}</h6>
-                  <h6 className='card-subtitle mb-2 text-muted'>comments: {item.comments}</h6>
+                  <h6 className='card-subtitle mb-2 text-muted'>Number of comments: {item.comments}</h6>
                   <p className='card-text'>Content: {item.body}</p>
                   <p className='card-text'>CREATED: {item.created}</p>
                   <p className='card-text'>UPDATED: {item.updated}</p>
+
                   <a href={item.url} class='card-link'>URL</a>
                 </div>
               </div>
