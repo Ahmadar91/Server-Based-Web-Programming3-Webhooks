@@ -144,7 +144,7 @@ export default class App extends React.Component {
     return (
       <div className='App'>
         <div className='left'>
-          <h1>Notification List</h1>
+          <h1 className='white'>Notification List</h1>
           {
             this.state.alertList.map((item) => (
               <Alerts key={item.number} type={item.type} title={item.title} number={item.number} action={item.action} user={item.user} avatar={item.avatar} url={item.url} content={item.content} />
@@ -153,7 +153,7 @@ export default class App extends React.Component {
           }
         </div>
         <div>
-          <h1> Issue List</h1>
+          <h1 className='white'> Issue List</h1>
           {
             this.state.issueList.map((item) => (
               <Issues key={item.number} alerts={item.alerts} event={item.event} title={item.title} avatar={item.avatar} user={item.user} number={item.number} comments={item.comments} body={item.body} created={item.created} updated={item.updated} url={item.url} />
