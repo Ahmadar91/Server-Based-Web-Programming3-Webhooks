@@ -7,7 +7,6 @@ export default class App extends React.Component {
     super(props)
     this.socket = new window.WebSocket('ws:localhost:3000')
     this.socket.addEventListener('message', (event) => this.receive(event))
-    this.counter = 0
     this.state = {
       issueList: [],
       alertList: []
