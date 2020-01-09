@@ -6,7 +6,8 @@
   padding: 20 px;
 }
 .red{
-  background-color: red;
+  background-color: rgb(202, 31, 31);
+  padding: 3px;
 }
 .App-logo {
   height: 40vmin;

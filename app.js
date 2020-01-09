@@ -33,8 +33,6 @@ ws.getWss().on('connection', function (ws) {
   if (ws.readyState === 1) {
     console.log('connected')
     repo.issues(function (callback, body, header) {
-      // console.log(body)
-
       const issueList = []
       for (let index = 0; index < body.length; index++) {
         issueList.push({
@@ -47,7 +45,8 @@ ws.getWss().on('connection', function (ws) {
           updated: body[index].updated_at,
           comments: body[index].comments,
           avatar: body[index].user.avatar_url,
-          alerts: 0
+          alerts: 0,
+          event: ''
         })
       }
       if (ws.readyState === 1) {
@@ -63,8 +62,6 @@ ws.getWss().on('connection', function (ws) {
 app.ws('', function (ws, req) {
   hook.on('issues', function (repo, data) {
     if (ws.readyState === 1) {
-      console.log(data)
-
       const obj = {
         message: 'update',
         action: data.action,
@@ -77,7 +74,8 @@ app.ws('', function (ws, req) {
         user: data.issue.user.login,
         url: data.issue.html_url,
         avatar: data.issue.user.avatar_url,
-        alerts: 0
+        alerts: 0,
+        event: ''
       }
       try {
         ws.send(JSON.stringify(obj))
@@ -88,8 +86,6 @@ app.ws('', function (ws, req) {
   })
   hook.on('issue_comment', function (repo, data) {
     if (ws.readyState === 1) {
-      console.log(data)
-
       const obj = {
         message: 'comment',
         action: data.action,
@@ -99,9 +95,10 @@ app.ws('', function (ws, req) {
         body: data.comment.body,
         user: data.comment.user.login,
         avatar: data.issue.user.avatar_url,
-        alerts: 0
+        url: data.issue.html_url,
+        alerts: 0,
+        event: ''
       }
-      // console.log(data.user.avatar_url)
       try {
         ws.send(JSON.stringify(obj))
       } catch (err) {

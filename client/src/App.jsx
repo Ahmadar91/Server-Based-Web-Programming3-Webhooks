@@ -4,7 +4,7 @@ import Alerts from './alerts'
 export default class App extends React.Component {
   constructor (props) {
     super(props)
-    this.socket = new WebSocket('ws:localhost:3000')
+    this.socket = new window.WebSocket('ws:localhost:3000')
     this.socket.addEventListener('message', (event) => this.receive(event))
     this.state = {
       issueList: [],
@@ -41,7 +41,8 @@ export default class App extends React.Component {
         user: e.user,
         url: e.url,
         avatar: e.avatar,
-        alerts: e.alerts
+        alerts: e.alerts,
+        event: e.action
       })
       this.alertIssue(e)
       this.setState({
@@ -71,7 +72,8 @@ export default class App extends React.Component {
         user: e.user,
         url: e.url,
         avatar: e.avatar,
-        alerts: e.alerts
+        alerts: e.alerts,
+        event: e.action
       }
       this.alertIssue(e)
       this.setState({
@@ -81,7 +83,16 @@ export default class App extends React.Component {
   }
 
   alertIssue (e) {
-    const alert = `the issue number ${e.number} is ${e.action} by user: ${e.user}`
+    const alert = {
+      number: e.number,
+      action: e.action,
+      user: e.user,
+      url: e.url,
+      title: e.title,
+      avatar: e.avatar,
+      type: 'Issue'
+
+    }
     const temp = this.state.alertList
     temp.push(alert)
     this.setState({
@@ -90,7 +101,16 @@ export default class App extends React.Component {
   }
 
   alertComment (e) {
-    const alert = `an Comment is ${e.action} by user: ${e.user} in issue number ${e.number}`
+    const alert = {
+      number: e.number,
+      action: e.action,
+      user: e.user,
+      url: e.url,
+      title: e.title,
+      avatar: e.avatar,
+      type: 'Comment'
+
+    }
     const alertTemp = this.state.alertList
     alertTemp.push(alert)
     const temp = this.state.issueList
@@ -115,23 +135,27 @@ export default class App extends React.Component {
       <div className='App'>
 
         <div className='left'>
-          <h1>Notification LIST</h1>
+          <h1>Notification List</h1>
           {
-            this.state.alertList.map((item) => (<Alerts key={item} message={item} />)
+            this.state.alertList.map((item) => (
+              <Alerts key={item.number} type={item.type} title={item.title} number={item.number} action={item.action} user={item.user} avatar={item.avatar} url={item.url} />
+            )
             )
           }
 
         </div>
 
         <div>
-          <h1>ISSUE LIST</h1>
+          <h1> Issue List</h1>
           {
             this.state.issueList.map((item) => (
               <div key={item.number} className='card' style={{ width: '18rem' }}>
                 <div className='card-body'>
 
                   {item.alerts > 0 &&
-                    <span className='red'>{item.alerts} New Comment</span>}
+                    <span className='red'>{item.alerts} New Comment&#40;s&#41;</span>}
+                  {item.event.length !== 0 &&
+                    <span className='red'> Issue is {item.event} </span>}
 
                   <h5 className='card-title'>Title: {item.title} </h5>
 
@@ -141,11 +165,12 @@ export default class App extends React.Component {
                     USER: {item.user}
                   </h6>
 
-                  <h6 className='card-subtitle mb-2 text-muted'>ISSUE NUMBER: {item.number}</h6>
-                  <h6 className='card-subtitle mb-2 text-muted'>Number of comments: {item.comments}</h6>
-                  <p className='card-text'>Content: {item.body}</p>
-                  <p className='card-text'>CREATED: {item.created}</p>
-                  <p className='card-text'>UPDATED: {item.updated}</p>
+                  <p className='card-text'>Issue Number: {item.number}</p>
+                  <p className='card-text'>Number of comments: {item.comments}</p>
+                  {item.body.length !== 0 &&
+                    <p className='card-text'>Body: {item.body}</p>}
+                  <p className='card-text'>Created: {item.created}</p>
+                  <p className='card-text'>Updated: {item.updated}</p>
 
                   <a href={item.url} className='card-link'>URL</a>
                 </div>
