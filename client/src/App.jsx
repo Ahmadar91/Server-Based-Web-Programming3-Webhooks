@@ -6,39 +6,39 @@ export default class App extends React.Component {
   constructor (props) {
     super(props)
     this.socket = new window.WebSocket('ws:localhost:3000')
-    this.socket.addEventListener('message', (event) => this.receive(event))
+    this.socket.addEventListener('message', (event) => this.receiveData(event))
     this.state = {
       issueList: [],
       alertList: []
     }
   }
 
-  receive (e) {
+  receiveData (e) {
     const data = JSON.parse(e.data)
     if (data.message === 'list') {
       this.setState({
         issueList: data.data
       })
     } else if (data.message === 'issues') {
-      this.update(data)
+      this.updateIssue(data)
     } else if (data.message === 'issue_comment') {
       this.alertComment(data)
     }
   }
 
-  update (e) {
+  updateIssue (e) {
     if (e.action === 'open' || e.action === 'reopened') {
-      this.open(e)
+      this.openIssue(e)
     }
     if (e.action === 'closed') {
-      this.closed(e)
+      this.closedIssue(e)
     }
     if (e.action === 'edited') {
-      this.edited(e)
+      this.editedIssue(e)
     }
   }
 
-  closed (e) {
+  closedIssue (e) {
     const temp = this.state.issueList
     const index = temp.findIndex(x => x.number === e.number)
     temp.splice(index, 1)
@@ -48,7 +48,7 @@ export default class App extends React.Component {
     })
   }
 
-  edited (e) {
+  editedIssue (e) {
     const temp = this.state.issueList
     const index = temp.findIndex(x => x.number === e.number)
     const current = temp[index].alerts
@@ -72,7 +72,7 @@ export default class App extends React.Component {
     })
   }
 
-  open (e) {
+  openIssue (e) {
     const temp = this.state.issueList
     temp.push({
       action: e.action,
