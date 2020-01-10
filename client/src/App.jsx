@@ -5,7 +5,7 @@ import Issues from './issues'
 export default class App extends React.Component {
   constructor (props) {
     super(props)
-    this.socket = new window.WebSocket('ws:localhost:3000')
+    this.socket = new window.WebSocket(process.env.REACT_APP_SOCKET)
     this.socket.addEventListener('message', (event) => this.receiveData(event))
     this.state = {
       issueList: [],
@@ -122,17 +122,25 @@ export default class App extends React.Component {
       content: e.commentBody,
       type: 'Comment'
     }
+    this.updateCommentAlert(alert, e)
+  }
+
+  updateCommentAlert (alert, e) {
     const alertTemp = this.state.alertList
     alertTemp.push(alert)
     const temp = this.state.issueList
     const index = temp.findIndex(x => x.number === e.number)
-    if (e.action === 'deleted') {
-      temp[index].comments--
-    } else if (e.action === 'created') {
-      temp[index].comments++
-      temp[index].alerts++
-    } else if (e.action === 'edited') {
-      temp[index].alerts++
+    switch (e.action) {
+      case 'deleted':
+        temp[index].comments--
+        break
+      case 'created':
+        temp[index].comments++
+        temp[index].alerts++
+        break
+      case 'edited':
+        temp[index].alerts++
+        break
     }
     this.setState({
       issueList: temp,
@@ -144,7 +152,7 @@ export default class App extends React.Component {
     return (
       <div className='App'>
         <div className='left'>
-          <h1 className='white'>Notification List</h1>
+          <h1>Notification List</h1>
           {
             this.state.alertList.map((item) => (
               <Alerts key={item.number} type={item.type} title={item.title} number={item.number} action={item.action} user={item.user} avatar={item.avatar} url={item.url} content={item.content} />
@@ -153,7 +161,7 @@ export default class App extends React.Component {
           }
         </div>
         <div>
-          <h1 className='white'> Issue List</h1>
+          <h1> Issue List</h1>
           {
             this.state.issueList.map((item) => (
               <Issues key={item.number} alerts={item.alerts} event={item.event} title={item.title} avatar={item.avatar} user={item.user} number={item.number} comments={item.comments} body={item.body} created={item.created} updated={item.updated} url={item.url} />

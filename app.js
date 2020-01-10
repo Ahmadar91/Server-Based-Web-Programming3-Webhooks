@@ -1,6 +1,7 @@
 'use strict'
 require('dotenv').config()
 var http = require('http')
+var https = require('https')
 const express = require('express')
 const path = require('path')
 const logger = require('morgan')
@@ -15,6 +16,12 @@ const PORT = process.env.PORT || 3000
 const server = http.createServer(app).listen(PORT, function () {
   console.log('Started: listing on port', PORT)
 })
+// const server = https.createServer({
+//   key: fs.readFileSync('./certificates/key.pem'),
+//   cert: fs.readFileSync('./certificates/cert.pem')
+// }, app).listen(PORT, function() {
+//   console.log('Started: listing on port', PORT)
+// })
 const wss = new WebSocket.Server({ server })
 // additional middleware
 app.use(bodyParser.json())
