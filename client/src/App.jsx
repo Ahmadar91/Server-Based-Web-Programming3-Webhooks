@@ -1,6 +1,8 @@
 import React from 'react'
 import './App.css'
-import Alerts from './alerts'
+import Alerts from './Alerts'
+import AlertComments from './AlertComments'
+
 import Issues from './issues'
 export default class App extends React.Component {
   constructor (props) {
@@ -9,7 +11,8 @@ export default class App extends React.Component {
     this.socket.addEventListener('message', (event) => this.receiveData(event))
     this.state = {
       issueList: [],
-      alertList: []
+      alertList: [],
+      alertListComments: []
     }
   }
 
@@ -126,26 +129,34 @@ export default class App extends React.Component {
   }
 
   updateCommentAlert (alert, e) {
-    const alertTemp = this.state.alertList
+    const alertTemp = this.state.alertListComments
     alertTemp.push(alert)
     const temp = this.state.issueList
     const index = temp.findIndex(x => x.number === e.number)
-    switch (e.action) {
-      case 'deleted':
-        temp[index].comments--
-        break
-      case 'created':
-        temp[index].comments++
-        temp[index].alerts++
-        break
-      case 'edited':
-        temp[index].alerts++
-        break
+    console.log(index)
+    if (index < 0) {
+      this.setState({
+        issueList: temp,
+        alertListComments: alertTemp
+      })
+    } else {
+      switch (e.action) {
+        case 'deleted':
+          temp[index].comments--
+          break
+        case 'created':
+          temp[index].comments++
+          temp[index].alerts++
+          break
+        case 'edited':
+          temp[index].alerts++
+          break
+      }
+      this.setState({
+        issueList: temp,
+        alertListComments: alertTemp
+      })
     }
-    this.setState({
-      issueList: temp,
-      alertList: alertTemp
-    })
   }
 
   render () {
@@ -155,7 +166,13 @@ export default class App extends React.Component {
           <h1>Notification List</h1>
           {
             this.state.alertList.map((item) => (
-              <Alerts key={item.number} type={item.type} title={item.title} number={item.number} action={item.action} user={item.user} avatar={item.avatar} url={item.url} content={item.content} />
+              <Alerts key={item.number} type={item.type} title={item.title} number={item.number} action={item.action} user={item.user} avatar={item.avatar} url={item.url} />
+            )
+            )
+          }
+          {
+            this.state.alertListComments.map((item) => (
+              <AlertComments key={item.number} type={item.type} title={item.title} number={item.number} action={item.action} user={item.user} avatar={item.avatar} url={item.url} content={item.content} />
             )
             )
           }
