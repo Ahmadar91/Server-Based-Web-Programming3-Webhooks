@@ -20,6 +20,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(hook)
 app.use(logger('dev'))
+app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'build')))
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'))
@@ -41,4 +42,14 @@ hook.on('error', function (err, req, res) {
   if (err) {
     console.log(err)
   }
+})
+// catch 404
+app.use((req, res, next) => {
+  res.status(404)
+  res.sendFile(path.join(__dirname, 'public', '404.html'))
+})
+// error handler
+app.use((err, req, res, next) => {
+  res.status(err.status || 500)
+  res.sendFile(path.join(__dirname, 'public', '500.html'))
 })
