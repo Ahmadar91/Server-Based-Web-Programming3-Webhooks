@@ -1,12 +1,10 @@
 'use strict'
 require('dotenv').config()
 var http = require('http')
-var https = require('https')
 const express = require('express')
 const path = require('path')
 const logger = require('morgan')
 var bodyParser = require('body-parser')
-const fs = require('fs')
 const WebSocket = require('ws')
 const hookHandler = require('./controllers/hookHandler')
 const GithubHook = require('express-github-webhook')
@@ -16,12 +14,6 @@ const PORT = process.env.PORT || 3000
 const server = http.createServer(app).listen(PORT, function () {
   console.log('Started: listing on port', PORT)
 })
-// const server = https.createServer({
-//   key: fs.readFileSync('./certificates/key.pem'),
-//   cert: fs.readFileSync('./certificates/cert.pem')
-// }, app).listen(PORT, function() {
-//   console.log('Started: listing on port', PORT)
-// })
 const wss = new WebSocket.Server({ server })
 // additional middleware
 app.use(bodyParser.json())
@@ -29,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(hook)
 app.use(logger('dev'))
 app.use(express.static(path.join(__dirname, 'build')))
-app.get('', function (req, res) {
+app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'))
 })
 wss.on('connection', function connection (ws) {
