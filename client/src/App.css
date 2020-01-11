@@ -1,14 +1,12 @@
 
 .App {
   padding: 70px;
-
-    /* The image used */
     background: url('./light.jpg');
-    /* Center and scale the image nicely */
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
 }
+
 .white{
   color: white;
 }
@@ -16,6 +14,7 @@
   float: right;
   padding: 20 px;
 }
+
 .red{
   background-color: rgb(202, 31, 31);
   padding: 3px;
