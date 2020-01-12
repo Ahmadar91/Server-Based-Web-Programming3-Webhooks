@@ -38,6 +38,7 @@ By using .env i can declare a variable or sensitive vaiables in the env file whi
 DigitalOcean guides that i used:  
 https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-in-ubuntu-18-04  
 https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-16-04  
+https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx  
 
 # What differs in your application when running it in development from running it in production:
 
