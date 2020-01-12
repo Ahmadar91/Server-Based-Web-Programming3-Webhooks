@@ -27,7 +27,7 @@ Production process managers helps and keeps the appication online it runs it in 
 
 # TLS certificates:
 
-Transfare layer security certificates which is certificate that do two things. The first it grants permission to use encrypted communication via Public Key Infrastructure.The second authenticates the identity of the certificate’s holder.I have used a self-signed certificates by following digital ocean guide to allow me to use the https. then i got a domain name and modified the certifcate using lets-Encrypt which is better than self-signed.
+Transfare layer security certificates which is certificate that do two things. The first it grants permission to use encrypted communication via Public Key Infrastructure using SHA256withRSA.The second authenticates the identity of the certificate’s holder.I have used a self-signed certificates by following digital ocean guide to allow me to use the https. then i got a domain name and modified the certifcate using lets-Encrypt which is better than self-signed.
 
 https://www.ssllabs.com/ssltest/
 
