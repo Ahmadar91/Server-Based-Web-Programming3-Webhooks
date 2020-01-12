@@ -1,10 +1,10 @@
 'use strict'
 require('dotenv').config()
-var http = require('http')
+const http = require('http')
 const express = require('express')
 const path = require('path')
 const logger = require('morgan')
-var bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
 const WebSocket = require('ws')
 const hookHandler = require('./controllers/hookHandler')
 const GithubHook = require('express-github-webhook')
