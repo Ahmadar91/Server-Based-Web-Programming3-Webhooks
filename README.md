@@ -2,7 +2,8 @@
 
 Examination assignment 3 for Ahmad Abdilrahim
 
-# URL FOR application:
+# URL FOR application:  
+http://assign3.softuza.com/
 
 # Describe what you have done to make your application secure, both in code and when configuring your application server:
 
@@ -28,10 +29,15 @@ Production process managers helps and keeps the appication online it runs it in 
 
 Transfare layer security certificates which is certificate that do two things. The first it grants permission to use encrypted communication via Public Key Infrastructure.The second authenticates the identity of the certificate’s holder.I have used a self-signed certificates by following digital ocean guide to allow me to use the https. then i got a domain name and modified the certifcate using lets-Encrypt which is better than self-signed.
 
+https://www.ssllabs.com/ssltest/
 
 # Environment variables: 
 
 By using .env i can declare a variable or sensitive vaiables in the env file which will not be uploaded or showing in github for example like the Token from github which is a personal Token. it is also used for if you have the same variale in diffrent places and you need to change it that would call to change each one but by using a env you only need to change it in the env file. i am using them both in the Client and the Server which i have .env with varaibles like Token, socket.
+
+DigitalOcean guides that i used:  
+https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-in-ubuntu-18-04  
+https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-16-04  
 
 # What differs in your application when running it in development from running it in production:
 
