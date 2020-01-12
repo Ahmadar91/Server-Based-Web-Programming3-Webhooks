@@ -3,7 +3,7 @@
 Examination assignment 3 for Ahmad Abdilrahim
 
 # URL FOR application:  
-http://assign3.softuza.com/
+https://assign3.softuza.com/
 
 # Describe what you have done to make your application secure, both in code and when configuring your application server:
 
