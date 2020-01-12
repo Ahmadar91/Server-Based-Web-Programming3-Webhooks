@@ -39,13 +39,13 @@ In my application the only thing that defers between development and production 
 
 # Which extra modules did you use in the assignment? Motivate the use of them, and how you have to make sure that they are secure enough for production:
 
-dotenv:to load the enviroment variables.
-morgan:logger for development and testing.
-body-parser:persing incomming request.
-ws: websocket to communicate with the client.
-octonode: github apiv3 library as suggested in the examination 3 to authinticate and get the issues
-express-github-webhook: github library to handle webhooks.
-checking their secuiry by running npm install --production and npm update
+dotenv:to load the enviroment variables.  
+morgan:logger for development and testing.   
+body-parser:persing incomming request.  
+ws: websocket to communicate with the client.  
+octonode: github apiv3 library as suggested in the examination 3 to authinticate and get the issues.  
+express-github-webhook: github library to handle webhooks.  
+checking their secuiry by running npm install --production and npm update.  
 
 # Have you implemented any extra features (see below) that could motivate a higher grade of this assignment? If so, describe them:
 
